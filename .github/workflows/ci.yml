@@ -19,9 +19,24 @@ on:
         description: 'Skip dependencies caching'
         required: true
         default: 'false'
+      BUILD_WINDOWS:
+        description: 'Set to true to build for Windows'
+        required: false
+        default: 'true'
+      BUILD_MAC:
+        description: 'Set to true to build for Mac'
+        required: false
+        default: 'false'
+      BUILD_LINUX:
+        description: 'Set to true to build for Linux'
+        required: false
+        default: 'false'
 
 env:
   SKIP_DEPS_CACHE: 'false'
+  BUILD_WINDOWS: ${{ inputs.BUILD_WINDOWS }}
+  BUILD_MAC: ${{ inputs.BUILD_MAC }}
+  BUILD_LINUX: ${{ inputs.BUILD_LINUX }}
   QT5_MODULES: 'debug_info qtcharts qtdatavis3d qtlottie qtnetworkauth qtquick3d qtquicktimeline qtscript qtwebengine qtwebglplugin'
   ROCKY_QT5_ARCHIVES: 'icu qt3d qtbase qtconnectivity qtdeclarative qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtsvg qttools qttranslations qtwayland qtwebchannel qtwebsockets qtwebview qtx11extras qtxmlpatterns'
   MACOX_X86_64_QT5_ARCHIVES: 'd3dcompiler_47 opengl32sw qt3d qtactiveqt qtbase qtconnectivity qtdeclarative qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtsvg qttools qttranslations qtwebchannel qtwebsockets qtwebview qtwinextras qtxmlpatterns'
@@ -36,7 +51,7 @@ env:
 
 jobs:
   rocky-linux:
-    if : ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
+    if: env.BUILD_LINUX == 'true' && ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
     name: 'Rocky Linux ${{ matrix.rocky-version }} ${{ matrix.vfx-platform }}
       <qt=${{ matrix.qt-version }},
        python=${{ matrix.python-version }},
@@ -313,7 +328,7 @@ jobs:
           cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
 
   macos:
-    if : ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
+    if: env.BUILD_MAC == 'true' && ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
     name: '${{ matrix.os }} ${{ matrix.arch-type }} ${{ matrix.vfx-platform }}
       <qt=${{ matrix.qt-version }},
        python=${{ matrix.python-version }},
@@ -548,7 +563,7 @@ jobs:
           cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
 
   windows:
-    if : ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
+    if: env.BUILD_WINDOWS == 'true' && ${{ github.repository_owner == 'AcademySoftwareFoundation' }}
     name: 'Windows ${{ matrix.vfx-platform }}
       <${{ matrix.os }}
        msvc=${{ matrix.msvc-component }},
@@ -810,4 +825,10 @@ jobs:
       - name: Install OpenRV
         run: |
           cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
+        shell: msys2 {0}
+
+      - name: Create Release Build
+        if: matrix.os == 'windows-2022' && matrix.build-type == 'Release'
+        run: |
+          cmake --build _build --config Release --target package --parallel=$(python -c 'import os; print(os.cpu_count())') -v
         shell: msys2 {0}
