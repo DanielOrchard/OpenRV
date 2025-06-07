@@ -50,4 +50,4 @@ env:
     qttranslations
 jobs: {}
 'on':
-  workflow_dispatch: {}
+  workflow_dispatch: null
