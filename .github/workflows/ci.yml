@@ -797,14 +797,17 @@ jobs:
           cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
         shell: msys2 {0}
 
-      - name: Create Release Build
-        if: matrix.os == 'windows-2022' && matrix.build-type == 'Release'
+      - name: Zip Installed Files
+        if: matrix.build-type == 'Release'
         run: |
-          cmake --build _build --config Release --target package --parallel=$(python -c 'import os; print(os.cpu_count())') -v
-        shell: msys2 {0}
-
+          powershell Compress-Archive -Path _install\* -DestinationPath OpenRV.zip
+        shell: pwsh
       - name: Upload release artifact
+        if: matrix.build-type == 'Release'
         uses: actions/upload-artifact@v3
+        with:
+          name: OpenRV-Windows
+          path: OpenRV.zip
         with:
           name: OpenRV-Windows
           path: _build/Release/
