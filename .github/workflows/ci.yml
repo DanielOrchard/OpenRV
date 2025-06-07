@@ -1,18 +1,6 @@
 name: OpenRV
 
 on:
-  push:
-    branches:
-      # This will run when PR is merged or direct pushes to main.
-      - main
-
-  pull_request: # This handles PR creation and subsequent commits.
-
-  schedule:
-    # Midnight build every day
-    - cron: "0 0 * * *"
-
-  # This allows manual triggering of the workflow from the web
   workflow_dispatch:
     inputs:
       SKIP_DEPS_CACHE:
@@ -586,29 +574,11 @@ jobs:
             vfx-platform: "CY2023"
             msvc-component: "14.40.17.10.x86.x64"
             msvc-compiler: "14.40.33807"
-          - os: "windows-2022"
-            arch-type: "x86_64"
-            build-type: "Debug"
-            qt-version: "5.15.2"
-            python-version: "3.10"
-            cmake-version: "3.31.6"
-            vfx-platform: "CY2023"
-            msvc-component: "14.40.17.10.x86.x64"
-            msvc-compiler: "14.40.33807"
 
           # VFX2024
           - os: "windows-2022"
             arch-type: "x86_64"
             build-type: "Release"
-            qt-version: "6.5.3"
-            python-version: "3.11"
-            cmake-version: "3.31.6"
-            vfx-platform: "CY2024"
-            msvc-component: "14.40.17.10.x86.x64"
-            msvc-compiler: "14.40.33807"
-          - os: "windows-2022"
-            arch-type: "x86_64"
-            build-type: "Debug"
             qt-version: "6.5.3"
             python-version: "3.11"
             cmake-version: "3.31.6"
