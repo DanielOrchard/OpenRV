@@ -808,6 +808,5 @@ jobs:
         with:
           name: OpenRV-Windows
           path: OpenRV.zip
-        with:
           name: OpenRV-Windows
           path: _build/Release/
