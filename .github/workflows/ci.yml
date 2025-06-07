@@ -1,5 +1,5 @@
 name: OpenRV
-true:
+on:
   push:
     branches:
     - main
