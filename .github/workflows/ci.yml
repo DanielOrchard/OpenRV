@@ -802,3 +802,9 @@ jobs:
         run: |
           cmake --build _build --config Release --target package --parallel=$(python -c 'import os; print(os.cpu_count())') -v
         shell: msys2 {0}
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: OpenRV-Windows
+          path: _build/Release/
